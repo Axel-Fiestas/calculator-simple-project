@@ -31,8 +31,12 @@ function CurrentNumber({ number }) {
 }
 
 function KeyboardPad({ updateNumber }) {
-  const handleButtonClick = (value) => {
-    updateNumber(7);
+  //const [number1, setNumber1] = useState(0);
+  //const [number2, setNumber2] = useState(0);
+
+  const handleButtonClick = (actualOptionSelected) => {
+    console.log(actualOptionSelected);
+    updateNumber(actualOptionSelected);
   };
   //When I interact with this
   return (
@@ -40,7 +44,7 @@ function KeyboardPad({ updateNumber }) {
       <div className="pad_row">
         <button>%</button>
         <button>CE</button>
-        <button onClick={handleButtonClick}>C</button>
+        <button onClick={() => handleButtonClick(0)}>C</button>
         <button>DELETE</button>
       </div>
 
@@ -52,29 +56,29 @@ function KeyboardPad({ updateNumber }) {
       </div>
 
       <div className="pad_row">
-        <button>7</button>
-        <button>8</button>
-        <button>9</button>
+        <button onClick={() => handleButtonClick(7)}>7</button>
+        <button onClick={() => handleButtonClick(8)}>8</button>
+        <button onClick={() => handleButtonClick(9)}>9</button>
         <button>x</button>
       </div>
 
       <div className="pad_row">
-        <button>4</button>
-        <button>5</button>
-        <button>6</button>
+        <button onClick={() => handleButtonClick(4)}>4</button>
+        <button onClick={() => handleButtonClick(5)}>5</button>
+        <button onClick={() => handleButtonClick(6)}>6</button>
         <button>-</button>
       </div>
 
       <div className="pad_row">
-        <button>1</button>
-        <button>2</button>
-        <button>3</button>
+        <button onClick={() => handleButtonClick(1)}>1</button>
+        <button onClick={() => handleButtonClick(2)}>2</button>
+        <button onClick={() => handleButtonClick(3)}>3 </button>
         <button>+</button>
       </div>
 
       <div className="pad_row">
         <button>+/-</button>
-        <button>0</button>
+        <button onClick={() => handleButtonClick(0)}>0</button>
         <button>.</button>
         <button>=</button>
       </div>
