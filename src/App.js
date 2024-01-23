@@ -11,28 +11,37 @@ function App() {
 }
 
 function Calculator() {
+  const [currentNumber, setCurrentNumber] = useState(0);
+
+  const updateNumber = (newNumber) => {
+    setCurrentNumber(newNumber);
+  };
+
   return (
     <div>
-      <CurrentNumber />
-      <KeyboardPad />
+      <CurrentNumber number={currentNumber} />
+      <KeyboardPad updateNumber={updateNumber} />
     </div>
   );
 }
 
-function CurrentNumber() {
-  const number = useState(0);
-
+function CurrentNumber({ number }) {
+  //Then this reacts!
   return <h1>{number}</h1>;
 }
 
-function KeyboardPad() {
+function KeyboardPad({ updateNumber }) {
+  const handleButtonClick = (value) => {
+    updateNumber(7);
+  };
+  //When I interact with this
   return (
     <div className="pad">
       <div className="pad_row">
         <button>%</button>
         <button>CE</button>
-        <button>C</button>
-        <button>->X</button>
+        <button onClick={handleButtonClick}>C</button>
+        <button>DELETE</button>
       </div>
 
       <div className="pad_row">
