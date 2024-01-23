@@ -11,7 +11,7 @@ function App() {
 }
 
 function Calculator() {
-  const [currentNumber, setCurrentNumber] = useState(0);
+  const [currentNumber, setCurrentNumber] = useState("0");
 
   const updateNumber = (newNumber) => {
     setCurrentNumber(newNumber);
@@ -26,26 +26,45 @@ function Calculator() {
 }
 
 function CurrentNumber({ number }) {
-  //Then this reacts!
   return <h1>{number}</h1>;
 }
 
 function KeyboardPad({ updateNumber }) {
   //const [number1, setNumber1] = useState(0);
   //const [number2, setNumber2] = useState(0);
+  const [firstOption, setFirstOption] = useState("0");
+
+  const isNumber = (value) => {
+    const number = Number(value);
+    return typeof number == "number" ? true : false;
+  };
+
+  const concatNumber = (value, nextValue) => {
+    return value + nextValue;
+  };
 
   const handleButtonClick = (actualOptionSelected) => {
-    console.log(actualOptionSelected);
-    updateNumber(actualOptionSelected);
+    console.log(isNumber(actualOptionSelected));
+
+    if (isNumber(actualOptionSelected) && actualOptionSelected.length >= 1) {
+      updateNumber(concatNumber(firstOption, actualOptionSelected));
+      setFirstOption(concatNumber(firstOption, actualOptionSelected));
+    } else {
+      updateNumber(actualOptionSelected);
+      setFirstOption(actualOptionSelected);
+    }
+
+    //updateNumber(actualOptionSelected);
   };
+
   //When I interact with this
   return (
     <div className="pad">
       <div className="pad_row">
-        <button>%</button>
-        <button>CE</button>
-        <button onClick={() => handleButtonClick(0)}>C</button>
-        <button>DELETE</button>
+        <button onClick={() => handleButtonClick("%")}>%</button>
+        <button onClick={() => handleButtonClick("0")}>CE</button>
+        <button onClick={() => handleButtonClick("0")}>C</button>
+        <button onClick={() => handleButtonClick("")}>DELETE</button>
       </div>
 
       <div className="pad_row">
@@ -56,29 +75,29 @@ function KeyboardPad({ updateNumber }) {
       </div>
 
       <div className="pad_row">
-        <button onClick={() => handleButtonClick(7)}>7</button>
-        <button onClick={() => handleButtonClick(8)}>8</button>
-        <button onClick={() => handleButtonClick(9)}>9</button>
+        <button onClick={() => handleButtonClick("7")}>7</button>
+        <button onClick={() => handleButtonClick("8")}>8</button>
+        <button onClick={() => handleButtonClick("9")}>9</button>
         <button>x</button>
       </div>
 
       <div className="pad_row">
-        <button onClick={() => handleButtonClick(4)}>4</button>
-        <button onClick={() => handleButtonClick(5)}>5</button>
-        <button onClick={() => handleButtonClick(6)}>6</button>
+        <button onClick={() => handleButtonClick("4")}>4</button>
+        <button onClick={() => handleButtonClick("5")}>5</button>
+        <button onClick={() => handleButtonClick("6")}>6</button>
         <button>-</button>
       </div>
 
       <div className="pad_row">
-        <button onClick={() => handleButtonClick(1)}>1</button>
-        <button onClick={() => handleButtonClick(2)}>2</button>
-        <button onClick={() => handleButtonClick(3)}>3 </button>
+        <button onClick={() => handleButtonClick("1")}>1</button>
+        <button onClick={() => handleButtonClick("2")}>2</button>
+        <button onClick={() => handleButtonClick("3")}>3 </button>
         <button>+</button>
       </div>
 
       <div className="pad_row">
         <button>+/-</button>
-        <button onClick={() => handleButtonClick(0)}>0</button>
+        <button onClick={() => handleButtonClick("0")}>0</button>
         <button>.</button>
         <button>=</button>
       </div>
