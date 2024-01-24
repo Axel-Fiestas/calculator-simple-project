@@ -33,6 +33,7 @@ function KeyboardPad({ updateNumber }) {
   //const [number1, setNumber1] = useState(0);
   //const [number2, setNumber2] = useState(0);
   const [firstOption, setFirstOption] = useState("0");
+  const [initStatus, setInitStatus] = useState(true);
 
   const isNumber = (value) => {
     const number = Number(value);
@@ -43,10 +44,27 @@ function KeyboardPad({ updateNumber }) {
     return value + nextValue;
   };
 
+  const reset = () => {
+    setInitStatus(true);
+    updateNumber("0");
+  };
+
+  const printActualNumber = (numberString) => {
+    if (isNumber(numberString)) console.log(Number(numberString));
+  };
+
   const handleButtonClick = (actualOptionSelected) => {
     console.log(isNumber(actualOptionSelected));
 
-    if (isNumber(actualOptionSelected) && actualOptionSelected.length >= 1) {
+    if (initStatus === true) {
+      setInitStatus(false);
+    }
+
+    if (
+      isNumber(actualOptionSelected) &&
+      actualOptionSelected.length >= 1 &&
+      initStatus === false
+    ) {
       updateNumber(concatNumber(firstOption, actualOptionSelected));
       setFirstOption(concatNumber(firstOption, actualOptionSelected));
     } else {
@@ -62,8 +80,8 @@ function KeyboardPad({ updateNumber }) {
     <div className="pad">
       <div className="pad_row">
         <button onClick={() => handleButtonClick("%")}>%</button>
-        <button onClick={() => handleButtonClick("0")}>CE</button>
-        <button onClick={() => handleButtonClick("0")}>C</button>
+        <button onClick={reset}>CE</button>
+        <button onClick={reset}>C</button>
         <button onClick={() => handleButtonClick("")}>DELETE</button>
       </div>
 
@@ -99,7 +117,7 @@ function KeyboardPad({ updateNumber }) {
         <button>+/-</button>
         <button onClick={() => handleButtonClick("0")}>0</button>
         <button>.</button>
-        <button>=</button>
+        <button onClick={() => printActualNumber()}>=</button>
       </div>
     </div>
   );
