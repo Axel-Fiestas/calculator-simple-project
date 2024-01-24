@@ -34,10 +34,12 @@ function KeyboardPad({ updateNumber }) {
   //const [number2, setNumber2] = useState(0);
   const [firstOption, setFirstOption] = useState("0");
   const [initStatus, setInitStatus] = useState(true);
+  const [numbersToOperate, setNumbersToOperate] = useState([]);
+  const [actualNumberAux, setActualNumberAux] = useState(0);
 
-  const isNumber = (value) => {
-    const number = Number(value);
-    return typeof number == "number" ? true : false;
+  const isDigitNumber = (value) => {
+    const number = parseInt(value, 10);
+    return number >= 0 && number <= 9 ? true : false;
   };
 
   const concatNumber = (value, nextValue) => {
@@ -47,29 +49,50 @@ function KeyboardPad({ updateNumber }) {
   const reset = () => {
     setInitStatus(true);
     updateNumber("0");
+    setActualNumberAux(0);
   };
 
-  const printActualNumber = (numberString) => {
-    if (isNumber(numberString)) console.log(Number(numberString));
+  const addToNumberInArrayOfNumbersToOperate = (number) => {
+    setNumbersToOperate([...numbersToOperate, number]);
   };
 
-  const handleButtonClick = (actualOptionSelected) => {
-    console.log(isNumber(actualOptionSelected));
-
-    if (initStatus === true) {
-      setInitStatus(false);
-    }
-
+  const makeConcatenation = (actualOptionSelected, initStatus) => {
     if (
-      isNumber(actualOptionSelected) &&
+      isDigitNumber(actualOptionSelected) &&
       actualOptionSelected.length >= 1 &&
       initStatus === false
     ) {
       updateNumber(concatNumber(firstOption, actualOptionSelected));
       setFirstOption(concatNumber(firstOption, actualOptionSelected));
+      setActualNumberAux(
+        Number(concatNumber(firstOption, actualOptionSelected))
+      );
     } else {
       updateNumber(actualOptionSelected);
       setFirstOption(actualOptionSelected);
+      setActualNumberAux(
+        Number(concatNumber(firstOption, actualOptionSelected))
+      );
+    }
+  };
+
+  const handleButtonClick = (actualOptionSelected) => {
+    //console.log(firstOption);
+
+    console.log(isDigitNumber(actualOptionSelected));
+
+    if (isDigitNumber(actualOptionSelected)) {
+      if (initStatus === true) {
+        setInitStatus(false);
+      }
+      makeConcatenation(actualOptionSelected, initStatus);
+    } else {
+      console.log("Se añade el numero" + actualNumberAux + " al arreglo");
+      addToNumberInArrayOfNumbersToOperate(actualNumberAux);
+      console.log([...numbersToOperate]);
+
+      if (actualOptionSelected === "+") {
+      }
     }
 
     //updateNumber(actualOptionSelected);
@@ -110,14 +133,14 @@ function KeyboardPad({ updateNumber }) {
         <button onClick={() => handleButtonClick("1")}>1</button>
         <button onClick={() => handleButtonClick("2")}>2</button>
         <button onClick={() => handleButtonClick("3")}>3 </button>
-        <button>+</button>
+        <button onClick={() => handleButtonClick("+")}>+</button>
       </div>
 
       <div className="pad_row">
-        <button>+/-</button>
+        <button onClick={() => handleButtonClick("")}>+/-</button>
         <button onClick={() => handleButtonClick("0")}>0</button>
         <button>.</button>
-        <button onClick={() => printActualNumber()}>=</button>
+        <button>=</button>
       </div>
     </div>
   );
