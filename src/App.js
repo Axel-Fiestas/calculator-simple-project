@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useEffect } from "react";
 import "./App.css";
 
 function App() {
@@ -10,92 +11,107 @@ function App() {
   );
 }
 
+function CurrentNumberDisplayed({ number }) {
+  return <h1>{number}</h1>;
+}
+
 function Calculator() {
   const [currentNumber, setCurrentNumber] = useState("0");
+  const [numbers, setNumbers] = useState([]);
 
   const updateNumber = (newNumber) => {
-    setCurrentNumber(newNumber);
+    setCurrentNumber((n) => (n = newNumber));
+  };
+
+  const addNumber = (number) => {
+    setNumbers((n) => [...n, number]);
   };
 
   return (
     <div>
-      <CurrentNumber number={currentNumber} />
-      <KeyboardPad updateNumber={updateNumber} />
+      <CurrentNumberDisplayed number={currentNumber} />
+      <KeyboardPad
+        numbers={numbers}
+        addNumber={addNumber}
+        updateNumber={updateNumber}
+        actualNumber={currentNumber}
+      />
+      <ul>
+        {numbers.map((n) => (
+          <p>{n}</p>
+        ))}
+      </ul>
     </div>
   );
 }
 
-function CurrentNumber({ number }) {
-  return <h1>{number}</h1>;
-}
-
-function KeyboardPad({ updateNumber }) {
-  //const [number1, setNumber1] = useState(0);
-  //const [number2, setNumber2] = useState(0);
-  const [firstOption, setFirstOption] = useState("0");
+function KeyboardPad({ numbers, addNumber, updateNumber, actualNumber }) {
   const [initStatus, setInitStatus] = useState(true);
-  const [numbersToOperate, setNumbersToOperate] = useState([]);
-  const [actualNumberAux, setActualNumberAux] = useState(0);
-
-  const isDigitNumber = (value) => {
-    const number = parseInt(value, 10);
-    return number >= 0 && number <= 9 ? true : false;
-  };
 
   const concatNumber = (value, nextValue) => {
     return value + nextValue;
   };
 
+  const stringToNumber = (number) => {
+    return Number(number);
+  };
+
   const reset = () => {
     setInitStatus(true);
     updateNumber("0");
-    setActualNumberAux(0);
   };
 
-  const addToNumberInArrayOfNumbersToOperate = (number) => {
-    setNumbersToOperate([...numbersToOperate, number]);
-  };
+  const handleButtonClick = (symbol) => {
+    // Add the current number to the numbers array after the state update
+    useEffect(() => {
+      if (symbol === "+") {
+        let sum = 0;
+        numbers.forEach((el) => {
+          sum += el;
+        });
 
-  const makeConcatenation = (actualOptionSelected, initStatus) => {
-    if (
-      isDigitNumber(actualOptionSelected) &&
-      actualOptionSelected.length >= 1 &&
-      initStatus === false
-    ) {
-      updateNumber(concatNumber(firstOption, actualOptionSelected));
-      setFirstOption(concatNumber(firstOption, actualOptionSelected));
-      setActualNumberAux(
-        Number(concatNumber(firstOption, actualOptionSelected))
-      );
-    } else {
-      updateNumber(actualOptionSelected);
-      setFirstOption(actualOptionSelected);
-      setActualNumberAux(
-        Number(concatNumber(firstOption, actualOptionSelected))
-      );
-    }
-  };
-
-  const handleButtonClick = (actualOptionSelected) => {
-    //console.log(firstOption);
-
-    console.log(isDigitNumber(actualOptionSelected));
-
-    if (isDigitNumber(actualOptionSelected)) {
-      if (initStatus === true) {
-        setInitStatus(false);
+        updateNumber(sum.toString());
       }
-      makeConcatenation(actualOptionSelected, initStatus);
+    }, [numbers]);
+
+    // Enqueue the state update
+    addNumber(stringToNumber(actualNumber));
+
+    //const result = sum(operation[0], operation[1]);
+    //updateNumber(result.toString());
+    //resetOperation();
+    //addToNumberInArrayOfNumbersToOperate(result);
+
+    //switch (symbol) {
+    //  case "+":
+    //    operation.forEach(sumOperation);
+    //    //sum between 2 numbers in array,
+    //    //the result has been saved
+    //    updateNumber(result.toString());
+    //    //the result is displayed
+    //    operation = [];
+    //    //the operation array is clenaded
+    //    operation.push(result);
+    //    //the result was introduced in operation array
+    //
+    //    console.log(operation);
+    //  default:
+    //    console.log("a");
+    //    break;
+    //}
+
+    //reset();
+  };
+
+  const numberButtonClick = (numberSelected) => {
+    if (initStatus === true) {
+      setInitStatus(false);
+      updateNumber(numberSelected);
     } else {
-      console.log("Se añade el numero" + actualNumberAux + " al arreglo");
-      addToNumberInArrayOfNumbersToOperate(actualNumberAux);
-      console.log([...numbersToOperate]);
-
-      if (actualOptionSelected === "+") {
-      }
+      const newNumber = concatNumber(actualNumber, numberSelected);
+      console.log(newNumber);
+      updateNumber(newNumber);
     }
-
-    //updateNumber(actualOptionSelected);
   };
 
   //When I interact with this
@@ -116,29 +132,29 @@ function KeyboardPad({ updateNumber }) {
       </div>
 
       <div className="pad_row">
-        <button onClick={() => handleButtonClick("7")}>7</button>
-        <button onClick={() => handleButtonClick("8")}>8</button>
-        <button onClick={() => handleButtonClick("9")}>9</button>
+        <button onClick={() => numberButtonClick("7")}>7</button>
+        <button onClick={() => numberButtonClick("8")}>8</button>
+        <button onClick={() => numberButtonClick("9")}>9</button>
         <button>x</button>
       </div>
 
       <div className="pad_row">
-        <button onClick={() => handleButtonClick("4")}>4</button>
-        <button onClick={() => handleButtonClick("5")}>5</button>
-        <button onClick={() => handleButtonClick("6")}>6</button>
+        <button onClick={() => numberButtonClick("4")}>4</button>
+        <button onClick={() => numberButtonClick("5")}>5</button>
+        <button onClick={() => numberButtonClick("6")}>6</button>
         <button>-</button>
       </div>
 
       <div className="pad_row">
-        <button onClick={() => handleButtonClick("1")}>1</button>
-        <button onClick={() => handleButtonClick("2")}>2</button>
-        <button onClick={() => handleButtonClick("3")}>3 </button>
+        <button onClick={() => numberButtonClick("1")}>1</button>
+        <button onClick={() => numberButtonClick("2")}>2</button>
+        <button onClick={() => numberButtonClick("3")}>3 </button>
         <button onClick={() => handleButtonClick("+")}>+</button>
       </div>
 
       <div className="pad_row">
         <button onClick={() => handleButtonClick("")}>+/-</button>
-        <button onClick={() => handleButtonClick("0")}>0</button>
+        <button onClick={() => numberButtonClick("0")}>0</button>
         <button>.</button>
         <button>=</button>
       </div>
